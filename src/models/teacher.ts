@@ -1,0 +1,73 @@
+import mongoose from "mongoose";
+
+const teacherSchema = new mongoose.Schema(
+  {
+    id: String,
+    account: String,
+    gp: String,
+    school: String,
+    rank: Number,
+    datevalue: Number,
+    tname: String,
+    desig: String,
+    hoi: String,
+    prevmbasic: Number,
+    mbasic: Number,
+    mda: Number,
+    mhra: Number,
+    addl: Number,
+    ma: Number,
+    mgross: Number,
+    gpf: Number,
+    gsli: Number,
+    mptax: Number,
+    mnetpay: Number,
+    basic: Number,
+    da: Number,
+    hra: Number,
+    gross: Number,
+    jptax: Number,
+    netpay: Number,
+    bonus: Number,
+    doj: String,
+    dojnow: String,
+    dor: String,
+    address: String,
+    dob: String,
+    sis: String,
+    arrear: Number,
+    ifsc: String,
+    udise: String,
+    empid: String,
+    gender: String,
+    ph: Number,
+    disability: String,
+    email: String,
+    training: String,
+    tsname: String,
+    bank: String,
+    association: String,
+    dataYear: Number,
+    circle: String,
+    showAccount: Boolean,
+    newHt: Boolean,
+    pan: String,
+    fname: String,
+    question: String,
+    service: String,
+    gpfprev: Number,
+    julyGpf: Number,
+    registered: Boolean,
+    phone: String,
+    netpayword: String,
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const Teacher =
+  mongoose.models.teacher ||
+  mongoose.model("teacher", teacherSchema, "teacher");
+
+export default Teacher;

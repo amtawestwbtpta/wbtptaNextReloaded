@@ -1,0 +1,18 @@
+/* @media print {
+    @media (orientation: portrait) {
+        body {
+            flex-direction: column;
+        }
+    }
+}
+
+/* table,
+tr,
+th,
+td {
+  border: 1px solid;
+} 
+
+p {
+    margin: 0;
+} */

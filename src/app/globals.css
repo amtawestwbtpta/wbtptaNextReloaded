@@ -1,42 +1,399 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
+@import url("https://fonts.googleapis.com/css2?family=Fasthand&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap");
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
   margin: 0;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+/* Input Number Spinner Remove */
+
+/* Scroll Bar */
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(0, 58, 124);
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #00076e;
+}
+
+/* Scroll Bar */
+
+textarea {
+  resize: none;
+}
+
+input,
+textarea,
+option {
+  text-align: center;
+}
+
+.loader-container {
+  top: 0px;
+  left: 0px;
+  position: fixed;
+  text-align: center;
+  background-color: #000;
+  width: 100%;
+  height: 100%;
+  z-index: 1051;
+  opacity: 0.5;
+}
+
+.loader-container .spinner {
+  animation: rotate 2s linear infinite;
+  z-index: 2;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -25px 0 0 -25px;
+  width: 50px;
+  height: 50px;
+}
+
+.loader-container .spinner .path {
+  stroke: #93bfec;
+  stroke-linecap: round;
+  animation: dash 1.5s ease-in-out infinite;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}
+.error {
+  color: #ec1717;
+}
+
+body {
+  font-size: 14px;
+}
+
+/* @import url("https://fonts.googleapis.com/css2?family=Tiro+Bangla&display=swap");
+
+.ben {
+  font-family: "Tiro Bangla", serif;
+  font-weight: 400;
+  font-style: normal;
+} */
+
+.ben {
+  font-family: var(--font-kalpurush);
+}
+
+@media print {
+  .noprint {
+    display: none;
+  }
+}
+
+
+.for {
+  font-family: "Fasthand", cursive;
+}
+
+
+.web-message {
+  font-family: "Kaushan Script", cursive;
+}
+
+/* .timesFont {
+  font-family: "Times New Roman", Times, serif;
+} */
+.dejavu {
+  font-family: var(--font-dejaVuBold) !important;
+  font-size: smaller;
+}
+.dejaVuCondensed {
+  font-family: var(--font-dejaVuCondensed) !important;
+  font-size: smaller;
+}
+
+.dejaVuCondensed p,
+tr,
+th,
+td {
+  margin: 0;
+  padding: 0;
+}
+
+.timesFont {
+  font-family: var(--font-timesNewRoman);
+}
+.algerian {
+  font-family: var(--font-algerian);
+}
+
+.times {
+  height: 900px;
+}
+
+.timesAll {
+  height: 1000px;
+}
+
+.h-text {
+  font-weight: bolder;
+}
+
+/* table,tr,td,th{
+  border-collapse: collapse;
+} */
+.img {
+  width: 200px;
+  overflow: hidden;
+  position: relative;
+}
+
+.navprofileImage {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid #021252;
+  box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.5);
+  animation: mymove 5s infinite;
+  transform-origin: center;
+  cursor: pointer;
+}
+
+.profileImage {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px solid #021252;
+  animation: mymove 5s infinite;
+  transform-origin: center;
+  box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+@keyframes mymove {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(45deg);
+  }
+
+  50% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(-45deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+nav li:hover {
+  transform: translateY(5px);
+  font-size: 18px;
+  font-weight: bolder;
+  font-family: "Fasthand", cursive;
+  text-decoration: none !important;
+}
+
+@page {
+  size: auto !important;
+}
+
+h6 {
+  font-size: 12px;
+}
+
+.photo {
+  width: 106px;
+  height: 140px;
+  /* border: 1px solid black; */
+  margin: auto;
+  margin-bottom: 10px;
+}
+
+.student {
+  border: 1px solid black;
+}
+
+.student h5 {
+  opacity: 0.3;
+}
+
+table#team-list {
+  counter-reset: rowNumber;
+}
+
+table#team-list tr:nth-child(n + 1) {
+  counter-increment: rowNumber;
+}
+
+table#team-list tr:nth-child(n + 1) td:first-child::before {
+  content: counter(rowNumber);
+  min-width: 1em;
+  margin-right: 0.5em;
+}
+
+@media print {
+  div.nobreak {
+    break-inside: avoid;
+  }
+  table.nobreak {
+    break-inside: avoid;
+  }
+}
+
+@media print {
+  @media (orientation: portrait) {
+    body {
+      flex-direction: column;
+    }
+  }
+}
+/* PDFViewer.css */
+.pdf-viewer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+}
+
+.pdf-download-container {
+  margin-bottom: 20px;
+  width: 100%;
+  text-align: center;
+}
+
+.pdf-download-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.pdf-download-button:hover {
+  background-color: #45a049;
+}
+
+.pdf-display-container {
+  width: 100%;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: auto;
+  background-color: #f9f9f9;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 0;
+}
+
+.pdf-navigation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+  gap: 20px;
+  padding: 10px;
+  width: 100%;
+}
+
+.pdf-navigation button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  min-width: 40px;
+}
+
+.pdf-navigation button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+.pdf-navigation span {
+  font-size: 14px;
+  color: #555;
+}
+
+.pdf-loading, .pdf-error {
+  padding: 40px;
+  text-align: center;
+  color: #666;
+  font-size: 16px;
+}
+
+.pdf-error {
+  color: #e53935;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .pdf-viewer-container {
+    padding: 10px;
+  }
+  
+  .pdf-display-container {
+    min-height: 200px;
+  }
+  
+  .pdf-navigation {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .pdf-download-button {
+    padding: 8px 16px;
+    font-size: 14px;
   }
 }
