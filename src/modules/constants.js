@@ -44,3 +44,13 @@ export const keysData = [
   { id: "key29", keyName: "rank", displayName: "RANK" },
   { id: "key30", keyName: "dataYear", displayName: "DATAYEAR" },
 ];
+export const gpEngNames = [
+  "AMORAGORI",
+  "BKBATI",
+  "GAZIPUR",
+  "JHAMTIA",
+  "JHIKIRA",
+  "JOYPUR",
+  "NOWPARA",
+  "THALIA",
+];

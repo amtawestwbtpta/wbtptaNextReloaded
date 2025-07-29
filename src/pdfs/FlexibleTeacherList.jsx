@@ -109,7 +109,9 @@ export default function FlexibleTeacherList({ data, title, selectedKeys }) {
       {pages.map((page, index) => (
         <Page size="A4" orientation="portrait" style={styles.page} key={index}>
           <View style={styles.pageMainView}>
-            <Text style={[styles.title, { marginBottom: 3 }]}>{title}</Text>
+            <Text style={[styles.title, { marginBottom: 3 }]}>
+              {title ? title?.split("_")?.join(" ") : title}
+            </Text>
             <View style={styles.tableStartBorderView}>
               <View style={styles.rowStartBorderView}>
                 <THead

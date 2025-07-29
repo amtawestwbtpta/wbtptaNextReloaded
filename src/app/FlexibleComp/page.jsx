@@ -7,7 +7,7 @@ import {
 } from "../../modules/calculatefunctions";
 import { useGlobalContext } from "../../context/Store";
 import { useRouter } from "next/navigation";
-import { keysData } from "../../modules/constants";
+import { gpEngNames, keysData } from "../../modules/constants";
 import dynamic from "next/dynamic";
 import FlexibleTeacherList from "../../pdfs/FlexibleTeacherList";
 function FlexibleComp() {
@@ -71,7 +71,7 @@ function FlexibleComp() {
     //eslint-disable-next-line
   }, []);
   useEffect(() => {
-    document.title = heading.toUpperCase();
+    document.title = heading.toUpperCase()?.split(" ")?.join("_");
   }, [selectedKeys, teacherData, heading]);
   useEffect(() => {
     userData();
@@ -292,6 +292,22 @@ function FlexibleComp() {
               >
                 {showDownloadBtn ? "Hide Download" : "Show Download"}
               </button>
+              <div>
+                {gpEngNames.map((el, ind) => (
+                  <button
+                    type="button"
+                    className="btn btn-primary m-1"
+                    key={ind}
+                    onClick={() => {
+                      setFilteredData(
+                        filteredData.filter((tea) => tea.gp === el)
+                      );
+                    }}
+                  >
+                    {el}
+                  </button>
+                ))}
+              </div>
             </div>
             {showDownloadBtn && (
               <div className="my-4">
@@ -299,11 +315,19 @@ function FlexibleComp() {
                   document={
                     <FlexibleTeacherList
                       data={filteredData}
-                      title={heading ? heading.toUpperCase() : "Teachers List"}
+                      title={
+                        heading
+                          ? heading.toUpperCase()?.split(" ")?.join("_")
+                          : "Teachers List"
+                      }
                       selectedKeys={selectedKeys}
                     />
                   }
-                  fileName={`${title}.pdf`}
+                  fileName={`${
+                    heading
+                      ? heading.toUpperCase()?.split(" ")?.join("_")
+                      : "Teachers List"
+                  }.pdf`}
                   style={{
                     textDecoration: "none",
                     padding: 11,
@@ -321,7 +345,7 @@ function FlexibleComp() {
                 </PDFDownloadLink>
                 {/* <FlexibleTeacherList
                   data={filteredData}
-                  title={heading ? heading.toUpperCase() : "Teachers List"}
+                  title={heading ? heading.toUpperCase()?.split(" ")?.join("_") : "Teachers List"}
                   selectedKeys={selectedKeys}
                 /> */}
               </div>

@@ -57,7 +57,7 @@ const Footer = () => {
               className="d-inline-block mb-2 text-decoration-none text-dark"
             >
               <i className="bi bi-telephone-fill"></i>+ 91 99336 84468, Sk
-              Maidul Islam, Website Operator
+              Maidul Islam, Website Developer
             </Link>
             <br />
           </div>
