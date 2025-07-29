@@ -12,7 +12,7 @@ import {
   readCSVFile,
 } from "../../modules/calculatefunctions";
 import dynamic from "next/dynamic";
-import WBTPTAPaySLip from "../../components/WBTPTAPaySLip";
+import WBTPTAPaySLip from "../../pdfs/WBTPTAPaySLip";
 import axios from "axios";
 import Loader from "../../components/Loader";
 const PayslipWbtpta = () => {

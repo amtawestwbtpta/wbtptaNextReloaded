@@ -3,14 +3,14 @@ import ropa from "../../modules/ropa";
 import React, { Suspense, useEffect, useState } from "react";
 import { useGlobalContext } from "../../context/Store";
 import { useRouter } from "next/navigation";
-import {HRA } from "../../modules/constants";
+import { HRA } from "../../modules/constants";
 import {
   GetMonthName,
   NumInWords,
   printDate,
 } from "../../modules/calculatefunctions";
 import dynamic from "next/dynamic";
-import WBTPTAPaySLip from "../../components/WBTPTAPaySLip";
+import WBTPTAPaySLip from "../../pdfs/WBTPTAPaySLip";
 import axios from "axios";
 const PayslipWbtpta = () => {
   const PDFDownloadLink = dynamic(

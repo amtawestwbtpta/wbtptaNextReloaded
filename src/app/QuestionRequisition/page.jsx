@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../context/Store";
-import { useRouter } from "next/navigation";
 
 import { toast } from "react-toastify";
 import { firestore } from "../../context/FirebaseContext";
@@ -15,20 +14,27 @@ import {
   where,
 } from "firebase/firestore";
 
-import { Navigation, Pagination, Scrollbar, A11y, Autoplay } from "swiper";
+import {
+  Navigation,
+  Pagination,
+  Scrollbar,
+  A11y,
+  Autoplay,
+  EffectCube,
+} from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import "swiper/css/effect-cube";
-import { EffectCube } from "swiper";
 
 import { v4 as uuid } from "uuid";
 import Loader from "../../components/Loader";
 import { BsClipboard, BsClipboard2Check } from "react-icons/bs";
 import { compareObjects } from "../../modules/calculatefunctions";
 import { decryptObjData, getCookie } from "../../modules/encryption";
+import { useRouter } from "next/navigation";
 const QuestionRequisition = () => {
   const {
     questionState,
@@ -43,7 +49,7 @@ const QuestionRequisition = () => {
     setQuestionRateUpdateTime,
   } = useGlobalContext();
   const router = useRouter();
-  let details = getCookie("tid");
+  const [mounted, setMounted] = useState(false);
 
   const [docId, setDocId] = useState(uuid().split("-")[0]);
   const [serial, setSerial] = useState(0);
@@ -377,36 +383,41 @@ const QuestionRequisition = () => {
   };
 
   const settleQuestionData = () => {
-    if (details) {
-      const tdata = decryptObjData("tid");
-      if (tdata?.circle === "admin") {
-        setSchData(schoolState);
-      } else if (tdata?.circle !== "admin" && tdata?.question === "admin") {
-        setSchData(schoolState.filter((school) => school.gp === tdata?.gp));
-      } else {
-        setSchData(
-          schoolState.filter((school) => school.udise === tdata?.udise)
-        );
-      }
+    const tdata = decryptObjData("tid");
+    if (tdata?.circle === "admin") {
+      setSchData(schoolState);
+    } else if (tdata?.circle !== "admin" && tdata?.question === "admin") {
+      setSchData(schoolState.filter((school) => school.gp === tdata?.gp));
+    } else {
+      setSchData(schoolState.filter((school) => school.udise === tdata?.udise));
     }
   };
 
   useEffect(() => {
+    // Set mounted to true on client side
+    setMounted(true);
+
+    // Client-side only operations
     document.title = "WBTPTA AMTA WEST:Question Requisition Section";
-    settleQuestionData();
-    getQuestionData();
-    getAcceptingData();
-    // eslint-disable-next-line
-  }, []);
-  useEffect(() => {
-    if (!details) {
+    const tid = getCookie("tid");
+
+    if (!tid) {
       router.push("/logout");
+    } else {
+      settleQuestionData();
+      getQuestionData();
+      getAcceptingData();
     }
-
     // eslint-disable-next-line
-  }, []);
-  useEffect(() => {}, [addInputField, inputField, schData]);
+  }, [router]); // Add dependencies as needed
 
+  useEffect(() => {
+    // eslint-disable-next-line
+  }, [addInputField, inputField, schData]);
+  // Return null during SSR
+  if (!mounted) {
+    return null;
+  }
   return (
     <div className="container my-5 text-center">
       {loader ? <Loader /> : null}

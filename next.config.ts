@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Add this configuration to transpile ESM packages
+  transpilePackages: ["@react-pdf/renderer"],
   images: {
     remotePatterns: [
       {
@@ -28,7 +30,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   // Fixed: Moved and renamed the package configuration
-  serverExternalPackages: ["@react-pdf/renderer"],
+  // serverExternalPackages: ["@react-pdf/renderer"],
 };
 
 export default nextConfig;
