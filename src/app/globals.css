@@ -126,11 +126,9 @@ body {
   }
 }
 
-
 .for {
   font-family: "Fasthand", cursive;
 }
-
 
 .web-message {
   font-family: "Kaushan Script", cursive;
@@ -310,7 +308,7 @@ table#team-list tr:nth-child(n + 1) td:first-child::before {
 .pdf-download-button {
   display: inline-block;
   padding: 10px 20px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   text-decoration: none;
   border-radius: 4px;
@@ -346,7 +344,7 @@ table#team-list tr:nth-child(n + 1) td:first-child::before {
 }
 
 .pdf-navigation button {
-  background: #4CAF50;
+  background: #4caf50;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -366,7 +364,8 @@ table#team-list tr:nth-child(n + 1) td:first-child::before {
   color: #555;
 }
 
-.pdf-loading, .pdf-error {
+.pdf-loading,
+.pdf-error {
   padding: 40px;
   text-align: center;
   color: #666;
@@ -382,18 +381,53 @@ table#team-list tr:nth-child(n + 1) td:first-child::before {
   .pdf-viewer-container {
     padding: 10px;
   }
-  
+
   .pdf-display-container {
     min-height: 200px;
   }
-  
+
   .pdf-navigation {
     gap: 10px;
     flex-wrap: wrap;
   }
-  
+
   .pdf-download-button {
     padding: 8px 16px;
     font-size: 14px;
+  }
+}
+/* Mobile-specific crop styles */
+.react-crop {
+  position: relative;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.react-crop .ReactCrop__crop-selection {
+  touch-action: none;
+  border: 2px dashed rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 0 9999em rgba(0, 0, 0, 0.5);
+}
+
+.react-crop .ReactCrop__drag-handle {
+  width: 24px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 2px solid #007bff;
+}
+
+.react-crop .ReactCrop__drag-bar {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* For mobile devices */
+@media (pointer: coarse) {
+  .react-crop .ReactCrop__drag-handle {
+    width: 32px;
+    height: 32px;
+  }
+
+  .react-crop .ReactCrop__drag-bar {
+    width: 8px;
   }
 }

@@ -7,74 +7,21 @@ import {
 } from "../../modules/calculatefunctions";
 import { useGlobalContext } from "../../context/Store";
 import { useRouter } from "next/navigation";
+import { keysData } from "../../modules/constants";
+import dynamic from "next/dynamic";
+import FlexibleTeacherList from "../../pdfs/FlexibleTeacherList";
 function FlexibleComp() {
+  const PDFDownloadLink = dynamic(
+    async () =>
+      await import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
+    {
+      ssr: false,
+      loading: () => <p>Please Wait...</p>,
+    }
+  );
   const { state, teachersState } = useGlobalContext();
   const router = useRouter();
-  const [teacherData, setTeacherData] = useState([
-    { id: "key1", keyName: "school", displayName: "SCHOOL" },
-    { id: "key2", keyName: "udise", displayName: "UDISE" },
-    { id: "key3", keyName: "tname", displayName: "TEACHER'S NAME" },
-    { id: "key4", keyName: "gender", displayName: "GENDER" },
-    { id: "key5", keyName: "disability", displayName: "DISABILITY" },
-    { id: "key6", keyName: "desig", displayName: "DESIG." },
-    { id: "key7", keyName: "fname", displayName: "FATHER'S NAME" },
-    { id: "key8", keyName: "circle", displayName: "ACCESS" },
-    { id: "key9", keyName: "gp", displayName: "GP" },
-    { id: "key10", keyName: "association", displayName: "ASSOCIATION" },
-    { id: "key11", keyName: "phone", displayName: "PHONE" },
-    { id: "key12", keyName: "email", displayName: "EMAIL" },
-    { id: "key13", keyName: "dob", displayName: "BIRTHDATE" },
-    { id: "key14", keyName: "doj", displayName: "JOINING DATE" },
-    { id: "key15", keyName: "dojnow", displayName: "DOJ IN THIS SCHOOL" },
-    { id: "key16", keyName: "dor", displayName: "RETIREMENT DATE" },
-    { id: "key17", keyName: "bank", displayName: "BANK" },
-    { id: "key18", keyName: "account", displayName: "ACCOUNT NO." },
-    { id: "key19", keyName: "ifsc", displayName: "IFSC" },
-    { id: "key20", keyName: "empid", displayName: "EMPLOYEE ID" },
-    { id: "key21", keyName: "training", displayName: "TRAINING" },
-    { id: "key22", keyName: "pan", displayName: "PAN NO" },
-    { id: "key23", keyName: "address", displayName: "ADDRESS" },
-    { id: "key24", keyName: "question", displayName: "QUESTION ACCESS" },
-    { id: "key25", keyName: "hoi", displayName: "HOI" },
-    { id: "key26", keyName: "showAccount", displayName: "ACCOUNT SHOWN" },
-    { id: "key27", keyName: "service", displayName: "SERVICE STATUS" },
-    { id: "key28", keyName: "id", displayName: "ID" },
-    { id: "key29", keyName: "rank", displayName: "RANK" },
-    { id: "key30", keyName: "dataYear", displayName: "DATAYEAR" },
-  ]);
-  const keysData = [
-    { id: "key1", keyName: "school", displayName: "SCHOOL" },
-    { id: "key2", keyName: "udise", displayName: "UDISE" },
-    { id: "key3", keyName: "tname", displayName: "TEACHER'S NAME" },
-    { id: "key4", keyName: "gender", displayName: "GENDER" },
-    { id: "key5", keyName: "disability", displayName: "DISABILITY" },
-    { id: "key6", keyName: "desig", displayName: "DESIG." },
-    { id: "key7", keyName: "fname", displayName: "FATHER'S NAME" },
-    { id: "key8", keyName: "circle", displayName: "ACCESS" },
-    { id: "key9", keyName: "gp", displayName: "GP" },
-    { id: "key10", keyName: "association", displayName: "ASSOCIATION" },
-    { id: "key11", keyName: "phone", displayName: "PHONE" },
-    { id: "key12", keyName: "email", displayName: "EMAIL" },
-    { id: "key13", keyName: "dob", displayName: "BIRTHDATE" },
-    { id: "key14", keyName: "doj", displayName: "JOINING DATE" },
-    { id: "key15", keyName: "dojnow", displayName: "DOJ IN THIS SCHOOL" },
-    { id: "key16", keyName: "dor", displayName: "RETIREMENT DATE" },
-    { id: "key17", keyName: "bank", displayName: "BANK" },
-    { id: "key18", keyName: "account", displayName: "ACCOUNT NO." },
-    { id: "key19", keyName: "ifsc", displayName: "IFSC" },
-    { id: "key20", keyName: "empid", displayName: "EMPLOYEE ID" },
-    { id: "key21", keyName: "training", displayName: "TRAINING" },
-    { id: "key22", keyName: "pan", displayName: "PAN NO" },
-    { id: "key23", keyName: "address", displayName: "ADDRESS" },
-    { id: "key24", keyName: "question", displayName: "QUESTION ACCESS" },
-    { id: "key25", keyName: "hoi", displayName: "HOI" },
-    { id: "key26", keyName: "showAccount", displayName: "ACCOUNT SHOWN" },
-    { id: "key27", keyName: "service", displayName: "SERVICE STATUS" },
-    { id: "key28", keyName: "id", displayName: "ID" },
-    { id: "key29", keyName: "rank", displayName: "RANK" },
-    { id: "key30", keyName: "dataYear", displayName: "DATAYEAR" },
-  ];
-
+  const [teacherData, setTeacherData] = useState(keysData);
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [fetchedData, setFetchedData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -86,6 +33,7 @@ function FlexibleComp() {
   const [fvalue, setFvalue] = useState("");
   const [firstItem, setFirstItem] = useState(0);
   const [visibleItems, setVisibleItems] = useState(10);
+  const [showDownloadBtn, setShowDownloadBtn] = useState(false);
   const [showPagination, setShowPagination] = useState(true);
   const loadMore = () => {
     setVisibleItems((prevVisibleItems) => prevVisibleItems + 10);
@@ -257,9 +205,23 @@ function FlexibleComp() {
                     className="btn btn-info noprint text-white font-weight-bold p-2 m-5 rounded"
                     style={{ height: 50, width: 100 }}
                     onClick={() => {
+                      const fData = filteredData.filter((el) => {
+                        return el[fkey?.toString()?.toLowerCase()]
+                          ?.toString()
+                          ?.toLowerCase()
+                          ?.includes(fvalue?.toString()?.toLowerCase());
+                      });
                       setFilteredData(
-                        filteredData.filter((el) => el[fkey] === fvalue)
+                        fData.length > 0
+                          ? fData
+                          : fetchedData.filter((el) => {
+                              return el[fkey?.toString()?.toLowerCase()]
+                                ?.toString()
+                                ?.toLowerCase()
+                                ?.includes(fvalue?.toString()?.toLowerCase());
+                            })
                       );
+                      setShowDownloadBtn(false);
                     }}
                   >
                     Filter
@@ -272,6 +234,7 @@ function FlexibleComp() {
                       setFilteredData(fetchedData);
                       setFkey("");
                       setFvalue("");
+                      setShowDownloadBtn(false);
                     }}
                   >
                     Clear
@@ -284,9 +247,19 @@ function FlexibleComp() {
                 type="button"
                 className="btn btn-success noprint text-white font-weight-bold p-2 m-5 rounded"
                 onClick={() => {
-                  setFilteredData(
-                    fetchedData.filter((el) => el.association === "WBTPTA")
+                  const fData = filteredData.filter((el) =>
+                    fetchedData.filter((el) => el.association !== "WBTPTA")
                   );
+                  if (fData.length > 0) {
+                    setFilteredData(
+                      fetchedData.filter((el) => el.association === "WBTPTA")
+                    );
+                  } else {
+                    setFilteredData(
+                      filteredData.filter((el) => el.association === "WBTPTA")
+                    );
+                  }
+                  setShowDownloadBtn(false);
                 }}
               >
                 Filter WBTPTA
@@ -304,11 +277,55 @@ function FlexibleComp() {
                   setFirstItem(0);
                   setVisibleItems(10);
                   setShowPagination(true);
+                  setFilteredData(fetchedData);
+                  setShowDownloadBtn(false);
                 }}
               >
                 Close
               </button>
+              <button
+                type="button"
+                className="btn btn-success noprint text-white font-weight-bold p-2 m-5 rounded"
+                onClick={() => {
+                  setShowDownloadBtn(!showDownloadBtn);
+                }}
+              >
+                {showDownloadBtn ? "Hide Download" : "Show Download"}
+              </button>
             </div>
+            {showDownloadBtn && (
+              <div className="my-4">
+                <PDFDownloadLink
+                  document={
+                    <FlexibleTeacherList
+                      data={filteredData}
+                      title={heading ? heading.toUpperCase() : "Teachers List"}
+                      selectedKeys={selectedKeys}
+                    />
+                  }
+                  fileName={`${title}.pdf`}
+                  style={{
+                    textDecoration: "none",
+                    padding: 11,
+                    color: "#fff",
+                    backgroundColor: "purple",
+                    border: "1px solid #4a4a4a",
+                    width: "40%",
+                    borderRadius: 10,
+                    margin: 20,
+                  }}
+                >
+                  {({ blob, url, loading, error }) =>
+                    loading ? "Please Wait..." : "Download Teacher List"
+                  }
+                </PDFDownloadLink>
+                {/* <FlexibleTeacherList
+                  data={filteredData}
+                  title={heading ? heading.toUpperCase() : "Teachers List"}
+                  selectedKeys={selectedKeys}
+                /> */}
+              </div>
+            )}
             <h3 className="text-center mx-auto">{heading.toUpperCase()}</h3>
             <table className="table table-white table-hover table-striped table-borderd align-middle table-responsive mx-auto text-center">
               <thead>
@@ -413,6 +430,7 @@ function FlexibleComp() {
             onClick={() => {
               if (typeof window !== undefined) {
                 window.print();
+                setShowDownloadBtn(false);
               }
             }}
             style={{ height: 50, width: 100 }}
@@ -435,6 +453,7 @@ function FlexibleComp() {
                   setFirstItem(0);
                   setVisibleItems(filteredData.length);
                 }
+                setShowDownloadBtn(false);
               }}
             >
               Only WBTPTA Teachers
@@ -453,6 +472,7 @@ function FlexibleComp() {
                   setFirstItem(0);
                   setVisibleItems(filteredData.length);
                 }
+                setShowDownloadBtn(false);
               }}
             >
               All Teachers
@@ -481,6 +501,8 @@ function FlexibleComp() {
                 setFkey("");
                 setFvalue("");
                 setShowPagination(true);
+                setFilteredData(fetchedData);
+                setShowDownloadBtn(false);
               }}
             >
               Close

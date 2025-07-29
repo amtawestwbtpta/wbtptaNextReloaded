@@ -365,6 +365,13 @@ const YearWiseTeachers = () => {
                         } Teacher`}{" "}
                     Joined on Year {selectedYear}
                   </h4>
+                  <h4 className="text-center text-primary">
+                    Service Life:{" "}
+                    {new Date().getFullYear() - parseInt(selectedYear)}{" "}
+                    {new Date().getFullYear() - parseInt(selectedYear) > 1
+                      ? "Years"
+                      : "Year"}
+                  </h4>
                   {monthText && (
                     <div>
                       <h4 className="text-center text-primary">
@@ -404,6 +411,13 @@ const YearWiseTeachers = () => {
                       ]}{" "}
                     {selectedYear}
                   </h4>
+                  <h4 className="text-center text-primary">
+                    Service Life:{" "}
+                    {new Date().getFullYear() - parseInt(selectedYear)}{" "}
+                    {new Date().getFullYear() - parseInt(selectedYear) > 1
+                      ? "Years"
+                      : "Year"}
+                  </h4>
                 </div>
               )}
             </div>
@@ -436,15 +450,13 @@ const YearWiseTeachers = () => {
                               Mobile: {el.phone}
                             </a>
                           </h6>
-                          <div
-                            className={`d-flex flex-${
-                              filteredData.length !== 1 ? "row" : "column"
-                            } justify-content-evenly align-items-center`}
+
+                          <h6
+                            className={`text-center text-black`}
+                            suppressHydrationWarning
                           >
-                            <h6 className={`text-center text-black`}>
-                              Association:{" "}
-                            </h6>
-                            <h6
+                            Association:{" "}
+                            <span
                               className={`text-center ${
                                 el.association === "WBTPTA"
                                   ? "text-success"
@@ -452,8 +464,9 @@ const YearWiseTeachers = () => {
                               }`}
                             >
                               {el.association}
-                            </h6>
-                          </div>
+                            </span>
+                          </h6>
+
                           <h6 className="text-center text-black">
                             Service Life:
                             <br /> {getServiceLife(el.doj)}

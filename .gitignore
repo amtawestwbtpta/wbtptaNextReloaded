@@ -45,3 +45,6 @@ files
 test.js
 sample.txt
 server.js
+teachers.json
+schools.json
+question_rate.json

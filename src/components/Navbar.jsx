@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import {
   decryptAuthCookie,
   decryptObjData,
+  encryptObjData,
   getCookie,
 } from "../modules/encryption";
 import { firestore } from "../context/FirebaseContext";
@@ -16,8 +17,11 @@ import Image from "next/image";
 import axios from "axios";
 
 import { toast } from "react-toastify";
-
+import Teachers from "./teachers.json";
+import Schools from "./schools.json";
+import Question_Rate from "./question_rate.json";
 const Navbar = () => {
+  const isDev = process.env.NODE_ENV === "development";
   const {
     state,
     setState,
@@ -72,19 +76,23 @@ const Navbar = () => {
   const storeTeachersData = async () => {
     setShowLoader(true);
     let data = [];
-    try {
-      const q = query(collection(firestore, "teachers"));
-      const querySnapshot = await getDocs(q);
-      data = querySnapshot.docs.map((doc) => ({
-        // doc.data() is never undefined for query doc snapshots
-        ...doc.data(),
-        id: doc.id,
-      }));
-    } catch (error) {
-      console.error("Error fetching teachers data: ", error);
-      const url = `/api/getTeachers`;
-      const response = await axios.post(url);
-      data = response.data.data;
+    if (isDev) {
+      data = Teachers;
+    } else {
+      try {
+        const q = query(collection(firestore, "teachers"));
+        const querySnapshot = await getDocs(q);
+        data = querySnapshot.docs.map((doc) => ({
+          // doc.data() is never undefined for query doc snapshots
+          ...doc.data(),
+          id: doc.id,
+        }));
+      } catch (error) {
+        console.error("Error fetching teachers data: ", error);
+        const url = `/api/getTeachers`;
+        const response = await axios.post(url);
+        data = response.data.data;
+      }
     }
 
     const newDatas = data.sort((a, b) => {
@@ -105,20 +113,25 @@ const Navbar = () => {
   const storeSchoolData = async () => {
     setShowLoader(true);
     let data = [];
-    try {
-      const q = query(collection(firestore, "schools"));
+    if (isDev) {
+      data = Schools;
+    } else {
+      try {
+        const q = query(collection(firestore, "schools"));
 
-      const querySnapshot = await getDocs(q);
-      data = querySnapshot.docs.map((doc) => ({
-        // doc.data() is never undefined for query doc snapshots
-        ...doc.data(),
-        id: doc.id,
-      }));
-    } catch (error) {
-      const url = `/api/getSchools`;
-      const response = await axios.post(url);
-      data = response.data.data;
+        const querySnapshot = await getDocs(q);
+        data = querySnapshot.docs.map((doc) => ({
+          // doc.data() is never undefined for query doc snapshots
+          ...doc.data(),
+          id: doc.id,
+        }));
+      } catch (error) {
+        const url = `/api/getSchools`;
+        const response = await axios.post(url);
+        data = response.data.data;
+      }
     }
+
     setSchoolState(data);
     setSchoolUpdateTime(Date.now());
     setShowLoader(false);
@@ -181,6 +194,7 @@ const Navbar = () => {
       if (!data?.disabled) {
         setState(data?.circle);
         setUSER(data);
+        encryptObjData("uid", data, 10080);
         setQuestion(data?.question);
         setShowLoader(false);
       } else {
@@ -193,19 +207,23 @@ const Navbar = () => {
   const getAcceptingData = async () => {
     setShowLoader(true);
     let data = [];
-    try {
-      const q = query(collection(firestore, "question_rate"));
-      const querySnapshot = await getDocs(q);
-      data = querySnapshot.docs.map((doc) => ({
-        // doc.data() is never undefined for query doc snapshots
-        ...doc.data(),
-        id: doc.id,
-      }))[0];
-    } catch (error) {
-      console.error("Error fetching accepting data: ", error);
-      const url = `/api/getQuestionRate`;
-      const response = await axios.post(url);
-      data = response.data.data;
+    if (isDev) {
+      data = Question_Rate;
+    } else {
+      try {
+        const q = query(collection(firestore, "question_rate"));
+        const querySnapshot = await getDocs(q);
+        data = querySnapshot.docs.map((doc) => ({
+          // doc.data() is never undefined for query doc snapshots
+          ...doc.data(),
+          id: doc.id,
+        }))[0];
+      } catch (error) {
+        console.error("Error fetching accepting data: ", error);
+        const url = `/api/getQuestionRate`;
+        const response = await axios.post(url);
+        data = response.data.data;
+      }
     }
     setQuestionRateState(data);
     setQuestionRateUpdateTime(Date.now());
@@ -213,7 +231,7 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    checkLogin();
+    !isDev && checkLogin();
 
     const teacherDifference = (Date.now() - teacherUpdateTime) / 1000 / 60 / 15;
     if (teacherDifference >= 1 || teachersState.length === 0) {

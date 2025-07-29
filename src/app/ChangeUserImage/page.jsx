@@ -11,38 +11,30 @@ import {
   uploadBytesResumable,
   deleteObject,
 } from "firebase/storage";
-import ReactCrop from "react-image-crop";
-import "react-image-crop/dist/ReactCrop.css";
-import {
-  decryptObjData,
-  encryptObjData,
-  getCookie,
-} from "../../modules/encryption";
 import { useGlobalContext } from "../../context/Store";
 import axios from "axios";
 import ImageCropper from "../../components/ImageCropper";
+import { decryptObjData, encryptObjData } from "../../modules/encryption";
 
 const ChangePhoto = () => {
-  const { state, setUSER } = useGlobalContext();
+  const {
+    state,
+    setUSER,
+    stateObject,
+    setStateObject,
+    userState,
+    setUserState,
+    setUserUpdateTime,
+  } = useGlobalContext();
   const router = useRouter();
 
-  let id, teachersID, url, photoName;
-  let details = getCookie("uid");
-  if (details) {
-    let userdetails = decryptObjData("uid");
-    id = userdetails.id;
-    teachersID = userdetails.teachersID;
-    url = userdetails.url;
-    photoName = userdetails.photoName;
-  }
+  const { id, teachersID, url, photoName } = stateObject;
 
   const folder = "profileImage";
   const [loader, setLoader] = useState(false);
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(0);
   const [src, setSrc] = useState(null);
-
-  const [photoCropped, setPhotoCropped] = useState(true);
   const [croppedImage, setCroppedImage] = useState(null);
   const [croppedPreview, setCroppedPreview] = useState(null);
   const fileInputRef = useRef(null);
@@ -116,26 +108,37 @@ const ChangePhoto = () => {
                         toast.success(
                           "Congrats! Profile Image Changed Successfully!"
                         );
-
                         setSrc(null);
-
                         setLoader(false);
                         setDisabled(true);
                         setProgress(0);
                         setCroppedImage(null);
                         setCroppedPreview(null);
                         setFile(null);
+                        const y = userState.filter((el) => el.id === id)[0];
+                        y.url = photourl;
+                        y.photoName = teachersID + "-" + file.name;
+                        let newData = userState.filter((el) => el.id !== id);
+                        newData = [...newData, y];
+                        newData = newData.sort((a, b) =>
+                          a.createdAt < b.createdAt ? 1 : -1
+                        );
+                        setUserState(newData);
+                        setUserUpdateTime(Date.now());
                         let userdetails = decryptObjData("uid");
-                        let newUserDetails = {
-                          ...userdetails,
-                          url: photourl,
-                          photoName: teachersID + "-" + file.name,
-                        };
-
-                        encryptObjData("uid", newUserDetails, 10080);
-                        setUSER(newUserDetails);
+                        if (userdetails.id === id) {
+                          let newUserDetails = {
+                            ...userdetails,
+                            url: photourl,
+                            photoName: teachersID + "-" + file.name,
+                          };
+                          encryptObjData("uid", newUserDetails, 10080);
+                          setUSER(newUserDetails);
+                        }
                         if (fileInputRef.current)
                           fileInputRef.current.value = "";
+                        setStateObject({});
+                        router.back();
                       } else {
                         toast.error("Failed to Change Image!");
                       }
@@ -170,6 +173,7 @@ const ChangePhoto = () => {
               progress: undefined,
               theme: "light",
             });
+            setLoader(false);
           });
       }
     }

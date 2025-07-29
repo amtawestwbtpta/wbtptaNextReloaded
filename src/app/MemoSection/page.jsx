@@ -266,9 +266,9 @@ const MemoSection = () => {
                 position: "top-right",
                 autoClose: 1500,
                 hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
+                closeOnClick: +true,
+                pauseOnHover: +true,
+                draggable: +true,
                 progress: undefined,
                 theme: "light",
               });
@@ -402,9 +402,9 @@ const MemoSection = () => {
           position: "top-right",
           autoClose: 1500,
           hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
+          closeOnClick: +true,
+          pauseOnHover: +true,
+          draggable: +true,
           progress: undefined,
           theme: "light",
         });
@@ -629,25 +629,25 @@ const MemoSection = () => {
     {
       name: "Sl",
       selector: (row, index) => index + 1,
-      sortable: true,
+      sortable: +true,
     },
     {
       name: "Title",
       selector: (row) => row.title,
-      center: true,
-      wrap: true,
+      center: +true,
+      wrap: +true,
       width: width < 500 ? "30%" : "20%",
     },
     {
       name: "Memo No.",
       selector: (row) => row.memoNumber,
-      center: true,
-      wrap: true,
+      center: +true,
+      wrap: +true,
     },
     {
       name: "Date",
       selector: (row) => row.memoDate,
-      center: true,
+      center: +true,
     },
     {
       name: "File Type",
@@ -688,7 +688,7 @@ const MemoSection = () => {
             : "No File"}
         </h6>
       ),
-      center: true,
+      center: +true,
     },
     {
       name: "Download",
@@ -705,7 +705,7 @@ const MemoSection = () => {
         ) : (
           "No File Available"
         ),
-      center: true,
+      center: +true,
       width: width < 500 ? "18%" : "10%",
     },
     {
@@ -788,7 +788,7 @@ const MemoSection = () => {
             View
           </button>
         ),
-      center: true,
+      center: +true,
       width: width < 500 ? "70%" : "20%",
     },
   ];

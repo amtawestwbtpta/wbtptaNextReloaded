@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { useGlobalContext } from "../../context/Store";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -16,7 +16,7 @@ import {
 } from "firebase/firestore";
 
 import { ref, deleteObject } from "firebase/storage";
-import { ToastContainer, toast } from "react-toastify";
+import { Bounce, ToastContainer, toast } from "react-toastify";
 import bcrypt from "bcryptjs";
 import Loader from "../../components/Loader";
 import { createDownloadLink } from "../../modules/calculatefunctions";
@@ -31,15 +31,16 @@ const DisplayDatabase = () => {
     teachersState,
     setTeachersState,
     setTeacherUpdateTime,
+    setStateObject,
   } = useGlobalContext();
   const router = useRouter();
 
   const [showTable, setShowTable] = useState(false);
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
-  const [profileImageData, setProfileImageData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [loader, setLoader] = useState(false);
+  const [tooltip, setTooltip] = useState(false);
   const [userField, setUserField] = useState({
     teachersID: "",
     photoName: "",
@@ -78,17 +79,7 @@ const DisplayDatabase = () => {
     setShowTable(true);
     setUserUpdateTime(Date.now());
   };
-  const getProfileImageData = async () => {
-    const querySnapshot = await getDocs(
-      query(collection(firestore, "profileImage"))
-    );
-    const data = querySnapshot.docs.map((doc) => ({
-      // doc.data() is never undefined for query doc snapshots
-      ...doc.data(),
-      id: doc.id,
-    }));
-    setProfileImageData(data);
-  };
+
   useEffect(() => {
     const result = data.filter((el) => {
       return el.tname.toLowerCase().match(search.toLowerCase());
@@ -164,9 +155,17 @@ const DisplayDatabase = () => {
         let y = teachersState.filter((el) => el.id !== user.id);
         x.registered = false;
         y = [...y, x];
-        let c = y.sort(
-          (a, b) => a.school.localeCompare(b.school) && b.rank > a.rank
-        );
+        let c = y.sort((a, b) => {
+          // First, compare the "school" keys
+          if (a.school < b.school) {
+            return -1;
+          }
+          if (a.school > b.school) {
+            return 1;
+          }
+          // If "school" keys are equal, compare the "rank" keys
+          return a.rank - b.rank;
+        });
         setTeachersState(c);
         setUserUpdateTime(Date.now());
         setTeacherUpdateTime(Date.now());
@@ -258,7 +257,7 @@ const DisplayDatabase = () => {
         }
       })
       .catch((e) => {
-        toast.success("User Login Enable Updation Failed!");
+        toast.error("User Login Enable Updation Failed!");
       });
   };
   const resetPassword = async (user) => {
@@ -288,7 +287,74 @@ const DisplayDatabase = () => {
         toast.success("Congrats! User Password Reset Failed!");
       });
   };
-
+  const makeAdmin = async (id) => {
+    setLoader(true);
+    const docRef = doc(firestore, "teachers", id);
+    await updateDoc(docRef, {
+      circle: "admin",
+    })
+      .then(async () => {
+        const docRef2 = doc(firestore, "userteachers", id);
+        await updateDoc(docRef2, {
+          circle: "admin",
+        })
+          .then(() => {
+            let x = userState.filter((el) => el.id === id)[0];
+            let y = userState.filter((el) => el.id !== id);
+            x.circle = "admin";
+            y = [...y, x];
+            let newData = y.sort((a, b) => a.createdAt - b.createdAt);
+            setUserState(newData);
+            setUserUpdateTime(Date.now());
+            toast.success("Congrats! User is Now Admin!");
+            setLoader(false);
+          })
+          .catch((e) => {
+            toast.error("User Admin Updation Failed!");
+            console.log(e);
+            setLoader(false);
+          });
+      })
+      .catch((e) => {
+        toast.error("User Admin Updation Failed!");
+        console.log(e);
+        setLoader(false);
+      });
+  };
+  const removeAdmin = async (id) => {
+    setLoader(true);
+    const docRef = doc(firestore, "teachers", id);
+    await updateDoc(docRef, {
+      circle: "taw",
+    })
+      .then(async () => {
+        const docRef2 = doc(firestore, "userteachers", id);
+        await updateDoc(docRef2, {
+          circle: "taw",
+        })
+          .then(() => {
+            let x = userState.filter((el) => el.id === id)[0];
+            let y = userState.filter((el) => el.id !== id);
+            x.circle = "taw";
+            y = [...y, x];
+            let newData = y.sort((a, b) => a.createdAt - b.createdAt);
+            setUserState(newData);
+            setUserUpdateTime(Date.now());
+            toast.success("Congrats! User is No Longer Admin!");
+            setLoader(false);
+          })
+          .catch((e) => {
+            toast.error("User Admin Updation Failed!");
+            console.log(e);
+            setLoader(false);
+          });
+      })
+      .catch((e) => {
+        toast.error("User Admin Updation Failed!");
+        console.log(e);
+        setLoader(false);
+      });
+  };
   const getUserData = () => {
     const userDifference = (Date.now() - userUpdateTime) / 1000 / 60 / 3;
     if (userState.length === 0 || userDifference >= 1) {
@@ -307,7 +373,6 @@ const DisplayDatabase = () => {
   useEffect(() => {
     document.title = "WBTPTA AMTA WEST:User Databse";
     getUserData();
-    // getProfileImageData();
     //eslint-disable-next-line
   }, []);
   useEffect(() => {}, [userState]);
@@ -327,8 +392,9 @@ const DisplayDatabase = () => {
         rtl={false}
         pauseOnFocusLoss={false}
         draggable
-        pauseOnHover
+        pauseOnHover={false}
         theme="light"
+        transition={Bounce}
       />
       {loader ? <Loader /> : null}
       {showTable ? (
@@ -396,8 +462,28 @@ const DisplayDatabase = () => {
                         width: 200,
                         height: 200,
                         borderRadius: 10,
+                        cursor: "pointer",
+                        objectFit: "cover",
+                      }}
+                      onMouseEnter={() => setTooltip(true)}
+                      onMouseLeave={() => setTooltip(false)}
+                      onClick={() => {
+                        setStateObject(userField);
+                        router.push("/ChangeUserImage");
                       }}
                     />
+                    <div className="mx-auto">
+                      {tooltip && (
+                        <div>
+                          <span className="text-success">
+                            Change Profile Photo
+                          </span>
+                          <p className="text-success">
+                            Photo Name: {userField?.photoName}
+                          </p>
+                        </div>
+                      )}
+                    </div>
                     <div className="mt-5">
                       <h5 className="text-primary">User ID: {userField?.id}</h5>
                       <h5 className="text-primary">
@@ -486,6 +572,39 @@ const DisplayDatabase = () => {
                           }}
                         >
                           Lock User
+                        </button>
+                      )}
+                      {userField.circle === "admin" ? (
+                        <button
+                          type="button"
+                          className="btn m-3 btn-sm btn-danger"
+                          onClick={() => {
+                            // eslint-disable-next-line
+                            let message = confirm(
+                              `Are You Sure To Remove User ${userField.tname}'s from Admin? `
+                            );
+                            message
+                              ? removeAdmin(userField.id)
+                              : toast.error("User Not Removed from Admin!");
+                          }}
+                        >
+                          Remove Admin
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          className="btn m-3 btn-sm btn-success"
+                          onClick={() => {
+                            // eslint-disable-next-line
+                            let message = confirm(
+                              `Are You Sure To Make User ${userField.tname}'s Admin? `
+                            );
+                            message
+                              ? makeAdmin(userField.id)
+                              : toast.error("User Not Made Admin!");
+                          }}
+                        >
+                          Make Admin
                         </button>
                       )}
                       {!compare(

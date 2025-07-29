@@ -703,7 +703,11 @@ export const getValues = (firstArray, secondArray, sl) => {
         <td className="text-center">{sl + index + 1}</td>
         {firstArray.map((key, i) => (
           <td className="text-center" key={i}>
-            {obj.hasOwnProperty(key) ? obj[key] : null}
+            {obj.hasOwnProperty(key)
+              ? typeof obj[key] == "boolean"
+                ? obj[key].toString()
+                : obj[key]
+              : null}
           </td>
         ))}
       </tr>

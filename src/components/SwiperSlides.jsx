@@ -69,7 +69,7 @@ const SwiperSlides = () => {
     }
   };
   useEffect(() => {
-    getData();
+    // getData();
     // eslint-disable-next-line
   }, []);
   return (

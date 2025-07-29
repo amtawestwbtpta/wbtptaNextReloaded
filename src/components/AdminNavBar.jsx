@@ -32,15 +32,6 @@ const AdminNavBar = () => {
                 <Link
                   className="nav-link text-black"
                   aria-current="page"
-                  href="/AdminAccounts"
-                >
-                  Accounts
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link
-                  className="nav-link text-black"
-                  aria-current="page"
                   href="/adminUploadImage"
                 >
                   Upload Images

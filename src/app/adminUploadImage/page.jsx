@@ -26,6 +26,7 @@ import { v4 as uuid } from "uuid";
 import Loader from "../../components/Loader";
 import axios from "axios";
 import { compareObjects } from "../../modules/calculatefunctions";
+import Image from "next/image";
 const AdminUploadImage = () => {
   const { state, slideState, setSlideState, setSlideUpdateTime } =
     useGlobalContext();
@@ -40,7 +41,7 @@ const AdminUploadImage = () => {
   const [inputField, setInputField] = useState({
     title: "",
     description: "",
-    url: "",
+    url: null,
   });
   const [errInputField, setErrInputField] = useState({
     errTitle: "",
@@ -48,19 +49,19 @@ const AdminUploadImage = () => {
   });
   const [editField, setEditField] = useState({
     title: "",
-    url: "",
+    url: null,
     description: "",
     id: "",
     fileName: "",
-    cloudinaryUrl: "",
+    cloudinaryUrl: null,
   });
   const [orgEditField, setorgEditField] = useState({
     title: "",
-    url: "",
+    url: null,
     description: "",
     id: "",
     fileName: "",
-    cloudinaryUrl: "",
+    cloudinaryUrl: null,
   });
   const [errEditField, setErrEditField] = useState({
     errTitle: "",
@@ -70,6 +71,15 @@ const AdminUploadImage = () => {
   const [data, setData] = useState(false);
   const [datas, setDatas] = useState([]);
   const [folder, setFolder] = useState("galaryimages");
+  const [showImage, setShowImage] = useState(false);
+  const [imageData, setImageData] = useState({
+    title: "",
+    description: "",
+    url: null,
+    id: "",
+    fileName: "",
+    cloudinaryUrl: null,
+  });
   const getData = async () => {
     setLoader(true);
     setData(true);
@@ -233,7 +243,7 @@ const AdminUploadImage = () => {
                       setInputField({
                         title: "",
                         description: "",
-                        url: "",
+                        url: null,
                       });
                       setProgress(0);
                       setData(false);
@@ -424,7 +434,7 @@ const AdminUploadImage = () => {
                     setInputField({
                       title: "",
                       description: "",
-                      url: "",
+                      url: null,
                     });
 
                     setData(false);
@@ -460,10 +470,10 @@ const AdminUploadImage = () => {
           setEditField({
             title: "",
             description: "",
-            url: "",
+            url: null,
             id: "",
             fileName: "",
-            cloudinaryUrl: "",
+            cloudinaryUrl: null,
           });
 
           if (typeof window !== "undefined") {
@@ -507,7 +517,7 @@ const AdminUploadImage = () => {
           setInputField({
             title: "",
             description: "",
-            url: "",
+            url: null,
           });
 
           setData(false);
@@ -715,12 +725,23 @@ const AdminUploadImage = () => {
                           <td>{el.title}</td>
                           <td>{el.description}</td>
                           <td>
-                            <img
+                            <Image
                               src={el.url}
                               alt="thumbnail"
-                              style={{ width: "50px", height: "50px" }}
+                              width={100}
+                              height={100}
+                              style={{
+                                width: "50px",
+                                height: "50px",
+                                cursor: "pointer",
+                              }}
+                              onClick={() => {
+                                setImageData(el);
+                                setShowImage(true);
+                              }}
                             />
                           </td>
+
                           <td>
                             <a
                               href={el.url}
@@ -751,20 +772,22 @@ const AdminUploadImage = () => {
                             </td>
                           )}
                           <td>
-                            <button
-                              type="button"
-                              className="btn btn-danger"
-                              onClick={() => {
-                                deleteFile(
-                                  el.fileName,
-                                  el.id,
-                                  el.cloudinaryUrl
-                                );
-                              }}
-                              style={{ fontSize: 10 }}
-                            >
-                              Delete
-                            </button>
+                            {folder !== "profileImage" && (
+                              <button
+                                type="button"
+                                className="btn btn-danger"
+                                onClick={() => {
+                                  deleteFile(
+                                    el.fileName,
+                                    el.id,
+                                    el.cloudinaryUrl
+                                  );
+                                }}
+                                style={{ fontSize: 10 }}
+                              >
+                                Delete
+                              </button>
+                            )}
                           </td>
                         </tr>
                       );
@@ -882,19 +905,19 @@ const AdminUploadImage = () => {
                   onClick={() => {
                     setEditField({
                       title: "",
-                      url: "",
+                      url: null,
                       description: "",
                       id: "",
                       fileName: "",
-                      cloudinaryUrl: "",
+                      cloudinaryUrl: null,
                     });
                     setorgEditField({
                       title: "",
-                      url: "",
+                      url: null,
                       description: "",
                       id: "",
                       fileName: "",
-                      cloudinaryUrl: "",
+                      cloudinaryUrl: null,
                     });
                     setEditFile(null);
                     setProgress(0);
@@ -910,6 +933,55 @@ const AdminUploadImage = () => {
           </div>
         </div>
       </div>
+      {showImage && (
+        <div
+          className="modal fade show"
+          tabIndex="-1"
+          role="dialog"
+          style={{ display: "block" }}
+          aria-modal="true"
+        >
+          <div className="modal-dialog modal-xl">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id="staticBackdropLabel">
+                  {imageData?.title}
+                </h1>
+                <button
+                  type="button"
+                  className="btn-close"
+                  aria-label="Close"
+                  onClick={() => {
+                    setShowImage(false);
+                  }}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <Image
+                  src={imageData.url}
+                  width={400}
+                  height={100}
+                  alt="profilePhoto"
+                  className="img-fluid rounded border p-1"
+                  style={{ maxHeight: "400px", width: "auto" }}
+                />
+                <h4 className="m-2">{imageData.description}</h4>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn m-3 btn-sm btn-danger"
+                  onClick={() => {
+                    setShowImage(false);
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

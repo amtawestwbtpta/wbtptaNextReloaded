@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { useGlobalContext } from "../../context/Store";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -29,7 +29,9 @@ import { v4 as uuid } from "uuid";
 import { decryptObjData, getCookie } from "../../modules/encryption";
 
 const AdminUploadFile = () => {
-  const { state, setState } = useGlobalContext();
+  const { state } = useGlobalContext();
+  const fileInpRef = useRef();
+  const selectionRef = useRef();
   const router = useRouter();
   const [folder, setFolder] = useState("files");
   const [loader, setLoader] = useState(false);
@@ -303,6 +305,7 @@ const AdminUploadFile = () => {
             </h5>
             <select
               className="form-select"
+              ref={selectionRef}
               defaultValue={folder}
               onChange={(e) => {
                 setFolder(e.target.value);
@@ -310,7 +313,7 @@ const AdminUploadFile = () => {
               aria-label="Default select example"
             >
               <option value="">Select Foder Name</option>
-              <option value="files">Files</option>
+              <option value="files">Downloads</option>
               <option value="databases">Databases</option>
               <option value="others">Others</option>
             </select>
@@ -319,6 +322,7 @@ const AdminUploadFile = () => {
             <h5 className="text-center text-primary">Upload File</h5>
             <input
               type="file"
+              ref={fileInpRef}
               className="form-control"
               placeholder="Upload Document"
               onChange={(e) => {
@@ -338,7 +342,7 @@ const AdminUploadFile = () => {
           <div className="my-3">
             <button
               type="button"
-              className="btn btn-success my-3"
+              className="btn btn-success m-3"
               onClick={() => {
                 if (fileName !== "") {
                   uploadFiles();
@@ -348,7 +352,6 @@ const AdminUploadFile = () => {
                     autoClose: 1500,
                     hideProgressBar: false,
                     closeOnClick: true,
-
                     draggable: true,
                     progress: undefined,
                     theme: "light",
@@ -357,6 +360,19 @@ const AdminUploadFile = () => {
               }}
             >
               Upload File
+            </button>
+            <button
+              type="button"
+              className="btn btn-danger m-3"
+              onClick={() => {
+                setFile(null);
+                setFileName("");
+                fileInpRef.current.value = "";
+                selectionRef.current.value = "";
+                setFolder("files");
+              }}
+            >
+              Clear
             </button>
           </div>
         </div>
@@ -394,83 +410,81 @@ const AdminUploadFile = () => {
                 <tbody>
                   {allData.map((el, ind) => {
                     return (
-                      <>
-                        <tr key={ind}>
-                          <td>{ind + 1}</td>
-                          <td>
-                            {el.fileType === "application/pdf"
-                              ? "PDF"
-                              : el.fileType === "application/msword"
-                              ? "WORD"
-                              : el.fileType ===
-                                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                              ? "WORD"
-                              : el.fileType ===
-                                "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-                              ? "POWERPOINT"
-                              : el.fileType === "application/vnd.ms-excel"
-                              ? "EXCEL"
-                              : el.fileType ===
-                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                              ? "EXCEL"
-                              : el.fileType ===
-                                "application/vnd.ms-excel.sheet.macroEnabled.12"
-                              ? "EXCEL"
-                              : el.fileType === "application/vnd.ms-powerpoint"
-                              ? "EXCEL"
-                              : el.fileType === "application/zip"
-                              ? "ZIP"
-                              : el.fileType === "application/vnd.rar"
-                              ? "RAR"
-                              : el.fileType === "text/csv"
-                              ? "CSV"
-                              : el.fileType ===
-                                "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-                              ? "POWERPOINT"
-                              : ""}
-                          </td>
-                          <td>{el.fileName}</td>
-                          <td>
-                            <a
-                              href={el.url}
-                              className="btn btn-success rounded text-decoration-none"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              Download
-                            </a>
-                          </td>
-                          <td>
-                            <button
-                              type="button"
-                              className="btn btn-warning "
-                              data-bs-toggle="modal"
-                              data-bs-target="#staticBackdrop"
-                              onClick={() => {
-                                setEditFileId(el.id);
-                                setEditFileName(el.fileName);
-                              }}
-                            >
-                              Edit File Name
-                            </button>
-                          </td>
-                          <td>
-                            <button
-                              type="button"
-                              className="btn btn-danger "
-                              onClick={() =>
-                                deleteFile(
-                                  el.originalFileName,
-                                  el.id,
-                                  el.cloudinaryUrl
-                                )
-                              }
-                            >
-                              Delete Uploaded Files
-                            </button>
-                          </td>
-                        </tr>
-                      </>
+                      <tr key={ind}>
+                        <td>{ind + 1}</td>
+                        <td>
+                          {el.fileType === "application/pdf"
+                            ? "PDF"
+                            : el.fileType === "application/msword"
+                            ? "WORD"
+                            : el.fileType ===
+                              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                            ? "WORD"
+                            : el.fileType ===
+                              "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                            ? "POWERPOINT"
+                            : el.fileType === "application/vnd.ms-excel"
+                            ? "EXCEL"
+                            : el.fileType ===
+                              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                            ? "EXCEL"
+                            : el.fileType ===
+                              "application/vnd.ms-excel.sheet.macroEnabled.12"
+                            ? "EXCEL"
+                            : el.fileType === "application/vnd.ms-powerpoint"
+                            ? "EXCEL"
+                            : el.fileType === "application/zip"
+                            ? "ZIP"
+                            : el.fileType === "application/vnd.rar"
+                            ? "RAR"
+                            : el.fileType === "text/csv"
+                            ? "CSV"
+                            : el.fileType ===
+                              "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                            ? "POWERPOINT"
+                            : ""}
+                        </td>
+                        <td>{el.fileName}</td>
+                        <td>
+                          <a
+                            href={el.url}
+                            className="btn btn-success rounded text-decoration-none"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Download
+                          </a>
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            className="btn btn-warning "
+                            data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop"
+                            onClick={() => {
+                              setEditFileId(el.id);
+                              setEditFileName(el.fileName);
+                            }}
+                          >
+                            Edit File Name
+                          </button>
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            className="btn btn-danger "
+                            onClick={() =>
+                              deleteFile(
+                                el.originalFileName,
+                                el.id,
+                                el.cloudinaryUrl
+                              )
+                            }
+                          >
+                            Delete Uploaded Files
+                          </button>
+                        </td>
+                      </tr>
                     );
                   })}
                 </tbody>
@@ -483,14 +497,14 @@ const AdminUploadFile = () => {
             id="staticBackdrop"
             data-bs-backdrop="static"
             data-bs-keyboard="false"
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="staticBackdropLabel"
             aria-hidden="true"
           >
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h1 ClassName="modal-title fs-5" id="staticBackdropLabel">
+                  <h1 className="modal-title fs-5" id="staticBackdropLabel">
                     Edit File Name
                   </h1>
                   <button
@@ -505,7 +519,7 @@ const AdminUploadFile = () => {
                   ></button>
                 </div>
                 <div className="modal-body">
-                  <div ClassName="modal-body">
+                  <div className="modal-body">
                     <div className="mb-3">
                       <input
                         type="text"

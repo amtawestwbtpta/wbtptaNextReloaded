@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Typed from "typed.js";
+
 import { decryptObjData, getCookie } from "../../modules/encryption";
 import {
   GetMonthName,
@@ -14,10 +14,10 @@ import ropa from "../../modules/ropa";
 import axios from "axios";
 import Loader from "../../components/Loader";
 import Image from "next/image";
+import TypedAnimation from "../../components/TypedAnimation";
 const page = () => {
   const { state } = useGlobalContext();
   const router = useRouter();
-  const el = React.useRef(null);
   const [tooltip, setTooltip] = useState(false);
   let teacherdetails,
     userdetails,
@@ -192,21 +192,6 @@ const page = () => {
   useEffect(() => {
     document.title = "WBTPTA AMTA WEST:Dashboard";
 
-    const typed = new Typed(el.current, {
-      strings: [`Welcome ${tname},<br /> ${desig}, of <br /> ${school}`],
-      typeSpeed: 50,
-      loop: true,
-      loopCount: Infinity,
-      showCursor: true,
-      cursorChar: "|",
-      autoInsertCss: true,
-    });
-
-    return () => {
-      // Destroy Typed instance during cleanup to stop animation
-      typed.destroy();
-    };
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
@@ -245,13 +230,9 @@ const page = () => {
           </div>
           <div className="mx-auto my-2" style={{ height: "120px" }}>
             {tname && (
-              <span
-                className="text-primary text-center fs-3 mb-3 web-message"
-                ref={el}
-                suppressHydrationWarning
-              >
-                Welcome {tname},<br /> {desig}, of <br /> {school}
-              </span>
+              <TypedAnimation
+                title={`Welcome ${tname},<br /> ${desig}, of <br /> ${school}`}
+              />
             )}
           </div>
 
